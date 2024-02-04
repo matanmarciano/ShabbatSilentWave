@@ -28,7 +28,8 @@ const RedAlertsPanel: React.FC = () => {
 
     useEffect(() => {
         const fetchRedAlerts = () => {
-            fetch('https://corsproxy.io/?https://api.tzevaadom.co.il/notifications')
+            // fetch('https://corsproxy.io/?https://api.tzevaadom.co.il/notifications')
+            fetch('https://api.codetabs.com/v1/proxy?quest=https://api.tzevaadom.co.il/notifications')
                 .then(response => response.json())
                 .then(result => result as RedAlertResponse[])
                 .then(candidateAlerts => {
