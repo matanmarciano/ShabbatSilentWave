@@ -36,7 +36,7 @@ const DvarTorah: React.FC<Props> = ({parasha}) => {
                                     var pTagRegex = /<p\s+class=ArticleText[^>]*>(.*?)<\/p>/g;
                                     var matches = Array.from(sourceCode.matchAll(pTagRegex), match => match[0]);
 
-                                    if(matches.length == 0) {
+                                    if(matches.length === 0) {
                                         pTagRegex = /<p\s+class="ArticleText"[^>]*>(.*?)<\/p>/g;
                                         matches = Array.from(sourceCode.matchAll(pTagRegex), match => match[0]);
                                     }
@@ -45,9 +45,15 @@ const DvarTorah: React.FC<Props> = ({parasha}) => {
 
                                     setDvarTorah(resultString)
                                 })
+                                .catch(() => {
+
+                                })
                         }
                     }
                 }
+            })
+            .catch(() => {
+
             })
     }, [parasha]);
 
