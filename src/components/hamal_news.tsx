@@ -13,19 +13,19 @@ const HamalNews: React.FC = () => {
             .then(response => response.json())
             .then(data => {
                 let newNews: NewsItem[] = []
-                data.data.slice(0,20).forEach((item: any) => {
-                    const newsItem: NewsItem = {description: ''}
-                    item.body.forEach((part: any) => {
-                        if(part.type === 'title') {
-                            newsItem.title = part.value
-                        } else if(part.type === 'text') {
-                            newsItem.description = newsItem.description + part.value
-                        }
-                    })
-                    newsItem.description = newsItem.description?.substring(0, 200) + "..."
-                    newsItem.pubDate = moment(item.publishedAt).utc().utcOffset(moment().utcOffset())
-
-                    newNews.push(newsItem)
+                data.data.filter((i: { isPinned: boolean; }) => !i.isPinned).slice(0,20).forEach((item: any) => {
+                        const newsItem: NewsItem = {description: ''}
+                        item.body.forEach((part: any) => {
+                            if(part.type === 'title') {
+                                newsItem.title = part.value
+                            } else if(part.type === 'text') {
+                                newsItem.description = newsItem.description + part.value
+                            }
+                        })
+                        newsItem.description = newsItem.description?.substring(0, 200) + "..."
+                        newsItem.pubDate = moment(item.publishedAt).utc().utcOffset(moment().utcOffset())
+    
+                        newNews.push(newsItem)
                 })
 
                 setNews(newNews)

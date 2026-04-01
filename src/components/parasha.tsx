@@ -1,7 +1,8 @@
-import {Card} from "antd";
+import {Card, Image} from "antd";
 import {useEffect, useState} from "react";
 import moment, {Moment} from "moment";
 import DvarTorah from "./dvar_torah";
+import candle from "../assets/candle.png";
 
 const Parasha: React.FC = () => {
     const [parasha, setParasha] = useState<string>('');
@@ -34,7 +35,7 @@ const Parasha: React.FC = () => {
         <div>
 
             <Card
-                title={<h1 style={{margin:0, padding:0}}>{parasha}</h1>}
+                title={<h1 style={{margin:0, padding:0}}><Image src={candle} height={35} /> שבת שלום - {parasha} <Image src={candle} height={35} /></h1>}
                 style={{
                     backgroundColor: 'rgba(255, 255, 255, 0.5)',
                     width: 450,

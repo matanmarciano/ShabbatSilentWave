@@ -1,65 +1,64 @@
-import {useEffect, useState} from "react";
+import { useEffect, useState } from "react";
 
 type Props = {
-    parasha: string
+    parasha: string;
 };
 
-const DvarTorah: React.FC<Props> = ({parasha}) => {
-    const [dvarTorah, setDvarTorah] = useState<string>();
+const DvarTorah: React.FC<Props> = ({ parasha }) => {
+    const [dvarTorah, setDvarTorah] = useState<string>("");
 
     useEffect(() => {
-        fetch('https://corsproxy.io/?https://aish.co.il/tp/tb')
-            .then(response => response.text())
-            .then(sourceCode => {
-                const cleanedSource = sourceCode.replace(/\s+/g, '');
+        const fetchDvarTorah = async () => {
+            try {
+                const response = await fetch("https://corsproxy.io/?https://aish.co.il/tp/tb/");
+                const sourceCode = await response.text();
 
-                const pattern = new RegExp(`<li><p>${parasha}<\\/p>(.*?)<\\/li>`, 'gs');
-                const matches = cleanedSource.match(pattern);
-                const extractedContent = matches?.map((match) => {
-                    const regex = new RegExp(`<li><p>${parasha}<\\/p>(.*?)<\\/li>`, 's');
-                    const result = regex.exec(match);
-                    return result && result[1]; // Extracted content is in result[1]
+                const parser = new DOMParser();
+                const doc = parser.parseFromString(sourceCode, "text/html");
+
+                const liElements = Array.from(doc.querySelectorAll(".parshaBackground li"));
+
+                const matchedLi = liElements.find((li) => {
+                    const p = li.querySelector("p");
+                    return p?.textContent?.trim() === parasha.trim();
                 });
 
-                if (extractedContent) {
-                    if (extractedContent.length > 0) {
-                        const aa = extractedContent[0]??''
-                        const urlRegex = /<ahref="([^"]*)"[^>]*>/g;
-                        const matches = Array.from(aa.matchAll(urlRegex), match => match[1]);
-
-                        if(matches.length > 0) {
-                            fetch(`https://corsproxy.io/?${matches[0]}`)
-                                .then(response => response.text())
-                                .then(sourceCode => {
-                                    console.log(sourceCode)
-
-                                    var pTagRegex = /<p\s+class=ArticleText[^>]*>(.*?)<\/p>/g;
-                                    var matches = Array.from(sourceCode.matchAll(pTagRegex), match => match[0]);
-
-                                    if(matches.length === 0) {
-                                        pTagRegex = /<p\s+class="ArticleText"[^>]*>(.*?)<\/p>/g;
-                                        matches = Array.from(sourceCode.matchAll(pTagRegex), match => match[0]);
-                                    }
-
-                                    const resultString = matches.map(tag => tag.replace(/<p[^>]*>/, '').replace(/<\/p>/, '')).join('\n');
-
-                                    setDvarTorah(resultString)
-                                })
-                                .catch(() => {
-
-                                })
-                        }
-                    }
+                if (!matchedLi) {
+                    console.log("No matching parasha found:", parasha);
+                    setDvarTorah("");
+                    return;
                 }
-            })
-            .catch(() => {
 
-            })
+                const link = matchedLi.querySelector("a")?.getAttribute("href");
+                if (!link) {
+                    console.log("No article link found for parasha:", parasha);
+                    setDvarTorah("");
+                    return;
+                }
+
+                const articleResponse = await fetch(`https://corsproxy.io/?${link}`);
+                const articleHtml = await articleResponse.text();
+
+                const articleDoc = parser.parseFromString(articleHtml, "text/html");
+
+                const paragraphs = Array.from(articleDoc.querySelectorAll("p.ArticleText"));
+
+                const resultString = paragraphs
+                    .map((p) => p.innerHTML.trim())
+                    .filter(Boolean)
+                    .join(". ");
+
+                setDvarTorah(resultString);
+            } catch (err) {
+                console.error(err);
+                setDvarTorah("");
+            }
+        };
+
+        fetchDvarTorah();
     }, [parasha]);
 
-    return (
-    <div dangerouslySetInnerHTML={{__html: dvarTorah ?? ''}}/>
-    );
-}
+    return <div dangerouslySetInnerHTML={{ __html: dvarTorah ?? '' }} />;
+};
 
 export default DvarTorah;

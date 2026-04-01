@@ -4,7 +4,7 @@ import HamalNews from "./components/hamal_news";
 import DigitalClock from "./components/digital_clock";
 import Parasha from "./components/parasha";
 import RedAlertsPanel from "./components/red_alerts";
-import background from "./assets/background.jpg";
+import background from "./assets/newback2.png";
 import candle from "./assets/candle.png";
 
 const { Content, Sider } = Layout;
@@ -23,18 +23,18 @@ const App: React.FC = () => {
                   paddingRight: 30,
               }}>
                   <DigitalClock />
-                  <h1 style={{
-                      marginTop:0,
-                      backgroundColor: 'rgba(255, 255, 255, 0.5)',
-                      width: 450,
-                      textAlign: 'center',
-                      padding: 5,
-                      borderRadius: 15 }}><Image src={candle} height={35} /> שבת שלום <Image src={candle} height={35} /> </h1>
+                  {/*<h1 style={{*/}
+                  {/*    marginTop:0,*/}
+                  {/*    backgroundColor: 'rgba(255, 255, 255, 0.5)',*/}
+                  {/*    width: 450,*/}
+                  {/*    textAlign: 'center',*/}
+                  {/*    padding: 5,*/}
+                  {/*    borderRadius: 15 }}><Image src={candle} height={35} /> שבת שלום <Image src={candle} height={35} /> </h1>*/}
                   <Parasha />
               </Content>
           </Layout>
 
-          <Sider style={{backgroundColor: "#50001b", padding: 10, overflow: "hidden"}} width={200}>
+          <Sider style={{backgroundColor: "#5f2800", padding: 10, overflow: "hidden"}} width={250}>
               <HamalNews />
               {/*<WallaNews />*/}
           </Sider>
